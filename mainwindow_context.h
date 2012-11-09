@@ -37,14 +37,14 @@ private:
 
 
 private:
-    QString _snapShotsPath;
-    double _everySecond;
-    double _secondsCounter;
+    QString _snapShotsPath;//куда сохраняем картинки
+    double _everySecond;//как часто сохраняем картинки
+    double _secondsCounter;//счетчик секунд
 
-    AreaData *_area;
-    ReadEventContext *_readContext;
-    RenderAreaContext *_renderArea;
-    float _cellSideLength;
+    AreaData *_area;//переменная в которой хранятся данные о поверхности катализатора
+    ReadEventContext *_readContext;// объект для чтения файлов событий
+    RenderAreaContext *_renderArea;//рисует поверхность катализатора
+    float _cellSideLength;//размер ячейки (маленького квадратика)
 
     QPushButton *_loadButton;
     QPushButton *_selectDirButton;

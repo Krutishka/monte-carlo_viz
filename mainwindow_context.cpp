@@ -65,6 +65,7 @@ MainWindowContext::MainWindowContext() : _snapShotsPath(""), _everySecond(0.05),
 }
 
 MainWindowContext::~MainWindowContext() {
+    delete _area;
     delete _readContext;
     delete _renderArea;
     delete _doButton;
@@ -105,13 +106,13 @@ void MainWindowContext::stopAnimation() {
     _animationTimer->stop();
 }
 
-void MainWindowContext::updateCell(CellType value, CoordType x, CoordType y) {
+void MainWindowContext::updateCell(CellType value, CoordType x, CoordType y) {//рисует одно событие
     CoordType cx = (x == _area->sizeX()) ? 0 : x;
     CoordType cy = (y == _area->sizeY()) ? 0 : y;
     _area->setValue(value, cx, cy);
     _renderArea->update(cx * _cellSideLength, cy * _cellSideLength, _cellSideLength, _cellSideLength);
 }
-
+//обновление времени
 void MainWindowContext::updateStatusBar() {
     QString totalTimeText;
     totalTimeText.setNum((double)_totalTime);
@@ -131,14 +132,14 @@ void MainWindowContext::openFile() {
 
     if (_readContext != 0) delete _readContext;
     _readContext = new ReadEventContext(fileName.toStdString());
-
+//чтение размеров поверхности
     Point2D sizes = _readContext->areaSizes();
     delete _area;
     _area = new AreaData(sizes.x, sizes.y);
     _renderArea->resetArea(_area);
     _totalTime = 0;
 }
-
+//выбор директории для сохранения в файл
 void MainWindowContext::openDirectory() {
     QFileDialog dialog(this);
     dialog.setDirectory(_snapShotsPath);
@@ -152,20 +153,18 @@ void MainWindowContext::openDirectory() {
 
     }
 }
-
+//задание размеров поверхности
 void MainWindowContext::updateSideLength() {
     _cellSideLength = _sideLengthText->toPlainText().toInt();
     if (_cellSideLength == 0) return;
     _renderArea->resetSideLength(_cellSideLength);
 }
-
+//сохранение картинки
 void MainWindowContext::saveSnapShot() {
     if (_snapShotsPath == "") return;
 
     QPixmap pixmap = QPixmap::grabWidget(_renderArea);
-//    pixmap.fill();
     QString out = _snapShotsPath + QString('/') + QString::number(_totalTime) + QString(".png");
-//    QString out = QString::number(_totalTime) + QString(".png");
     if (pixmap.save(out)) {
         qDebug() << out;
     } else {
